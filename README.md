@@ -9,7 +9,7 @@ Running the files in the experiments folder will give the results for the paper.
 In general, there are 3-5 parameters to modify:
 A. ScalabilityExperiment.java
   1. project path - path where the project/file/directory is located
-  2. dataset path - path where the dataset is located (SITS_2006_NDVI_C)
+  2. dataset path - path where the dataset is located (SITS_2006_NDVI_C)
   3. methods - algorithm used to search for the best warping window for a dataset
     a. FastWWSearch
     b. LBKeogh
