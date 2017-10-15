@@ -136,7 +136,7 @@ public class UCR_FastWWSPrunedDTW {
         for (int i = 0; i < nbRuns; i++) {
         	train = Sampling.random(train);        	
         	
-        	method = "fastwws";
+        	method = "FastWWSearch";
         	System.out.println("Run " + i + ", Launching " + method);
         	FastWWS fastwwsClassifier = new FastWWS(datasetName);
         	fastwwsClassifier.setResDir(resDir);
@@ -158,7 +158,7 @@ public class UCR_FastWWSPrunedDTW {
 
         	saveSearchTime(searchTime, eval.errorRate());
         	        	
-        	method = "fastwwsSDM16";
+        	method = "FastWWSearch-PrunedDTW";
         	System.out.println("Run " + i + ", Launching FastWWS with SDM16");
         	FastWWSPrunedDTW fastwwsSDM16Classifier = new FastWWSPrunedDTW(datasetName);
         	fastwwsSDM16Classifier.setResDir(resDir);
