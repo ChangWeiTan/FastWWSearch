@@ -52,10 +52,10 @@ public class ScalabilityExperiment {
     	username = System.getProperty("user.name");
     	if (osName.contains("Window")) {
     		projectPath = "C:/Users/" + username + "/workspace/SDM18/";
-    		datasetPath = "C:/Users/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
+    		datasetPath = "C:/Users/" + username + "/workspace/Dataset/SITS_2006_NDVI_C/";
     	} else {
     		projectPath = "/home/" + username + "/workspace/SDM18/";
-   			datasetPath = "/home/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
+   			datasetPath = "/home/" + username + "/workspace/Dataset/SITS_2006_NDVI_C/";
     	}
 		
 		// Get initial heap size
