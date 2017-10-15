@@ -22,14 +22,14 @@ import sequences.SymbolicSequence;
 /**
  * Code for the paper "Efficient search of the best warping window for Dynamic Time Warping" published in SDM18
  * 
- * Class for LazyUCR distance introduced in our SDM18 paper. 
+ * Class for LazyAssessNN distance introduced in our SDM18 paper. 
  * It implements a "lazy" UCR Suites for our KDD12 competitor
  * It is used in CascadeLB.java replacing the original KDD12 code 
  * 
  * @author Chang Wei Tan, Francois Petitjean, Matthieu Herrmann, Germain Forestier, Geoff Webb
  *
  */
-public class LazyCascadingLBEarlyAbandon implements Comparable<LazyCascadingLBEarlyAbandon> {
+public class LazyAssessNNEarlyAbandon implements Comparable<LazyAssessNNEarlyAbandon> {
 	// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     // Internal types
     // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -69,7 +69,7 @@ public class LazyCascadingLBEarlyAbandon implements Comparable<LazyCascadingLBEa
 	// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     // Constructor
     // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-	public LazyCascadingLBEarlyAbandon(SymbolicSequence query, int index, SymbolicSequence reference, int indexReference, SequenceStatsCache cache) {
+	public LazyAssessNNEarlyAbandon(SymbolicSequence query, int index, SymbolicSequence reference, int indexReference, SequenceStatsCache cache) {
 		if (index < indexReference) {
 			this.query = query;
 			this.indexQuery = index;
@@ -88,7 +88,7 @@ public class LazyCascadingLBEarlyAbandon implements Comparable<LazyCascadingLBEa
 		this.status = LBStatus.LB_Kim;
 	}
 
-	public LazyCascadingLBEarlyAbandon(SequenceStatsCache cache){
+	public LazyAssessNNEarlyAbandon(SequenceStatsCache cache){
 		this.cache = cache;
 	}
 
@@ -562,13 +562,13 @@ public class LazyCascadingLBEarlyAbandon implements Comparable<LazyCascadingLBEa
 	}
 	
 	@Override
-	public int compareTo(LazyCascadingLBEarlyAbandon o) {
+	public int compareTo(LazyAssessNNEarlyAbandon o) {
 		int res = this.compare(o);
 		return res;
 		
 	}
 	
-	protected int compare(LazyCascadingLBEarlyAbandon o) {
+	protected int compare(LazyAssessNNEarlyAbandon o) {
 		double num1 = this.getDoubleValueForRanking();
 		double num2 = o.getDoubleValueForRanking();
 		return Double.compare(num1, num2);
@@ -605,7 +605,7 @@ public class LazyCascadingLBEarlyAbandon implements Comparable<LazyCascadingLBEa
 	
 	@Override
 	public boolean equals(Object o) {
-		LazyCascadingLBEarlyAbandon d = (LazyCascadingLBEarlyAbandon) o;
+		LazyAssessNNEarlyAbandon d = (LazyAssessNNEarlyAbandon) o;
 		return (this.indexQuery == d.indexQuery && this.indexReference == d.indexReference);
 	}
 

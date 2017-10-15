@@ -20,9 +20,9 @@ package windowSearcher;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import items.LazyCascadingLB;
+import items.LazyAssessNN;
 import items.SequenceStatsCache;
-import items.LazyCascadingLB.RefineReturnType;
+import items.LazyAssessNN.RefineReturnType;
 import sequences.SymbolicSequence;
 
 /**
@@ -184,12 +184,12 @@ public class FastWWS extends WindowSearcher {
         }
 
         // Vector of LazyUCR distance, propagating bound info "horizontally"
-        LazyCascadingLB[] lazyUCR = new LazyCascadingLB[train.length];
+        LazyAssessNN[] lazyUCR = new LazyAssessNN[train.length];
         for (int i = 0; i < train.length; ++i) {
-            lazyUCR[i] = new LazyCascadingLB(cache);
+            lazyUCR[i] = new LazyAssessNN(cache);
         }
         // "Challengers" that compete with each other to be the NN of query
-        ArrayList<LazyCascadingLB> challengers = new ArrayList<LazyCascadingLB>(train.length);
+        ArrayList<LazyAssessNN> challengers = new ArrayList<LazyAssessNN>(train.length);
 
         System.out.println("Initialisation done ("+doTime(timeInit)+")");
         
@@ -204,7 +204,7 @@ public class FastWWS extends WindowSearcher {
             // Clear off the previous challengers and add all the previous sequences
             challengers.clear();		
             for(int previous=0; previous < current; ++previous) {
-                LazyCascadingLB d = lazyUCR[previous];
+                LazyAssessNN d = lazyUCR[previous];
                 d.set(train[previous], previous, sCurrent, current);
                 challengers.add(d);
             }
@@ -223,7 +223,7 @@ public class FastWWS extends WindowSearcher {
 
                         // --- Try to beat the previous best NN
                         double toBeat = prevNN.distance;
-                        LazyCascadingLB challenger = lazyUCR[previous];
+                        LazyAssessNN challenger = lazyUCR[previous];
                         RefineReturnType rrt = challenger.tryToBeat(toBeat, win);
 
                         // --- Check the result
@@ -240,7 +240,7 @@ public class FastWWS extends WindowSearcher {
                     // Sort the challengers so we have a better chance to organize a good pruning.
                     Collections.sort(challengers);
 
-                    for (LazyCascadingLB challenger : challengers) {
+                    for (LazyAssessNN challenger : challengers) {
                         // --- Get the data
                         int previous = challenger.indexQuery;
                         PotentialNN prevNN = nns[win][previous];

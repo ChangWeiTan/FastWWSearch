@@ -22,16 +22,16 @@ import sequences.SymbolicSequence;
 /**
  * Code for the paper "Efficient search of the best warping window for Dynamic Time Warping" published in SDM18
  * 
- * Class for LazyUCR distance introduced in our SDM18 paper. 
+ * Class for LazyAssessNN distance introduced in our SDM18 paper. 
  * It implements a "Lazy" UCR Suites so we do not need to compute DTW/LB distance for every warping window
- * We use this in FastWWS to fill in our desired table quickly
+ * We use this in FastWWSearch to fill in our desired table quickly
  * This distance does not use early abandoning for both LB Keogh and DTW 
  * as it was found that early abandoning has longer runtime
  * 
  * @author Chang Wei Tan, Francois Petitjean, Matthieu Herrmann, Germain Forestier, Geoff Webb
  *
  */
-public class LazyCascadingLB implements Comparable<LazyCascadingLB> {
+public class LazyAssessNN implements Comparable<LazyAssessNN> {
 	// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     // Internal types
     // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -71,7 +71,7 @@ public class LazyCascadingLB implements Comparable<LazyCascadingLB> {
 	// --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     // Constructor
     // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
-    public LazyCascadingLB(SymbolicSequence query, int index, SymbolicSequence reference, int indexReference, SequenceStatsCache cache) {
+    public LazyAssessNN(SymbolicSequence query, int index, SymbolicSequence reference, int indexReference, SequenceStatsCache cache) {
 		if (index < indexReference) {
 			this.query = query;
 			this.indexQuery = index;
@@ -90,7 +90,7 @@ public class LazyCascadingLB implements Comparable<LazyCascadingLB> {
 		this.status = LBStatus.LB_Kim;
 	}
 
-	public LazyCascadingLB(SequenceStatsCache cache){
+	public LazyAssessNN(SequenceStatsCache cache){
 		this.cache = cache;
 	}
 
@@ -478,13 +478,13 @@ public class LazyCascadingLB implements Comparable<LazyCascadingLB> {
 	}
 	
 	@Override
-	public int compareTo(LazyCascadingLB o) {
+	public int compareTo(LazyAssessNN o) {
 		int res = this.compare(o);
 		return res;
 		
 	}
 	
-	protected int compare(LazyCascadingLB o) {
+	protected int compare(LazyAssessNN o) {
 		double num1 = this.getDoubleValueForRanking();
 		double num2 = o.getDoubleValueForRanking();
 		return Double.compare(num1, num2);
@@ -521,7 +521,7 @@ public class LazyCascadingLB implements Comparable<LazyCascadingLB> {
 	
 	@Override
 	public boolean equals(Object o) {
-		LazyCascadingLB d = (LazyCascadingLB) o;
+		LazyAssessNN d = (LazyAssessNN) o;
 		return (this.indexQuery == d.indexQuery && this.indexReference == d.indexReference);
 	}
 
