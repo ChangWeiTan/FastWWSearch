@@ -25,8 +25,8 @@ import items.ExperimentsLauncher;
 import tools.Sampling;
 import weka.core.Instances;
 import windowSearcher.FastWWS;
-import windowSearcher.KDD12;
-import windowSearcher.SDM16;
+import windowSearcher.Trillion;
+import windowSearcher.LbKeoghPrunedDTW;
 import windowSearcher.WindowSearcher;
 
 /**
@@ -39,24 +39,24 @@ import windowSearcher.WindowSearcher;
  *
  */
 public class ScalabilityExperiment {
-	private static final int estimate = 10000;
-	private static String osName, datasetName, username, projectPath, datasetPath, resDir, type;
+	private static int estimate = 10000;
+	private static String osName, datasetName, username, projectPath, datasetPath, resDir, method;
 	private static int[] sampleTrains = new int[]{100, 100, 250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 500000, 1000000};
 
 	public static void main(String[] args) throws Exception {
 		datasetName = "SITS1M_fold1";		// Name of dataset to be tested
-		type = "fastwws";						// Method type in finding the best window "naive, kdd12, sdm16, fastwws"
+		method = "FastWWSearch";				// Method type in finding the best window "naive, kdd12, sdm16, fastwws"
 		
 		// Get project and dataset path
-		osName = System.getProperty("os.name");
-		username = System.getProperty("user.name");
-		if (osName.contains("Window")) {
-			projectPath = "C:/Users/" + username + "/workspace/SDM18/";
-			datasetPath = "C:/Users/" + username + "/workspace/Dataset/SITS_2006_NDVI_C/";
-		} else {
-			projectPath = "/home/" + username + "/workspace/SDM18/";
-			datasetPath = "/home/" + username + "/workspace/Dataset/SITS_2006_NDVI_C/";
-		}
+		osName = System.getProperty("os.name");		
+    	username = System.getProperty("user.name");
+    	if (osName.contains("Window")) {
+    		projectPath = "C:/Users/" + username + "/workspace/SDM18/";
+    		datasetPath = "C:/Users/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
+    	} else {
+    		projectPath = "/home/" + username + "/workspace/SDM18/";
+   			datasetPath = "/home/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
+    	}
 		
 		// Get initial heap size
 		long heapMaxSize = Runtime.getRuntime().maxMemory();
@@ -66,25 +66,25 @@ public class ScalabilityExperiment {
 		// Get arguments 
 		if (args.length >= 1) projectPath = args[0];
 		if (args.length >= 2) datasetPath = args[1];
-		if (args.length >= 3) type = args[2];
+		if (args.length >= 3) method = args[2];
 
-		System.out.println("Experiment on " + type + " for " + datasetName + " dataset");
+		System.out.println("Scalability experiment with " + method);
 
 		// Load all data
 		Instances allData = loadAllData(); 
 
 		// Run the experiment depending on the given type
-		switch (type) {
-		case "navie": 
+		switch (method) {
+		case "LBKeogh": 
 			keogh(allData);
 			break;
-		case "kdd12":
-			kdd12(allData);
+		case "UCRSuite":
+			ucrSuite(allData);
 			break;
-		case "sdm16":
-			sdm16(allData);
+		case "LBKeogh-UCRSuite":
+			keoghPrunedDTW(allData);
 			break;
-		case "fastwws":
+		case "FastWWSearch":
 			fastWWS(allData);
 			break;
 		}
@@ -112,7 +112,7 @@ public class ScalabilityExperiment {
 	 * @param data
 	 */
 	public static void fastWWS(Instances data) {
-		System.out.println("FastWWS");
+		System.out.println(method);
 		double[] timeTaken = new double[sampleTrains.length];
 		int i = 0;
 		for (int sampleSize : sampleTrains) {
@@ -136,7 +136,7 @@ public class ScalabilityExperiment {
 			System.out.println("Size: " + sampleSize + ", Launching FastWWS");
 			FastWWS classifier = new FastWWS(datasetName);
 			classifier.setResDir(resDir);
-			classifier.setType(type);
+			classifier.setType(method);
 			start = System.nanoTime();
 			classifier.buildClassifier(newTrain);
 			stop = System.nanoTime();
@@ -154,7 +154,7 @@ public class ScalabilityExperiment {
 	 * @param data
 	 */
 	public static void keogh(Instances data) {
-		System.out.println("KEOGH");
+		System.out.println(method);
 		double[] timeTaken = new double[sampleTrains.length];
 		int i = 0;
 		for (int sampleSize : sampleTrains) {
@@ -172,7 +172,7 @@ public class ScalabilityExperiment {
 		long start, stop;
 		WindowSearcher classifier = new WindowSearcher(datasetName);
 		classifier.setResDir(resDir);
-		classifier.setType(type);
+		classifier.setType(method);
 		try{
 			Instances newTrain = Sampling.sample(data, sampleSize);
 			System.out.println("Size: " + sampleSize + ", Launching Keogh");
@@ -198,44 +198,44 @@ public class ScalabilityExperiment {
 	}
 
 	/**
-	 * Run KDD12 method 
+	 * Run UCRSuite method 
 	 * @param data
 	 */
-	public static void kdd12(Instances data) {
-		System.out.println("KDD12");
+	public static void ucrSuite(Instances data) {
+		System.out.println(method);
 
 		double[] timeTaken = new double[sampleTrains.length];
 		int i = 0;
 		for (int sampleSize : sampleTrains) {
-			double searchTime = kdd12(data, sampleSize);
+			double searchTime = ucrSuite(data, sampleSize);
 			timeTaken[i++] = searchTime;
 		}
 	}
 
 	/** 
-	 * Run KDD12 method for a given size
+	 * Run UCRSuite method for a given size
 	 * @param data
 	 * @param sampleSize
 	 * @return
 	 */
-	public static double kdd12(Instances data, int sampleSize) {
+	public static double ucrSuite(Instances data, int sampleSize) {
 		double share = 1, searchTime = 0;
 		long start, stop;
 		try{
 			Instances newTrain = Sampling.sample(data, sampleSize);
 			System.out.println("Size: " + sampleSize + ", Launching KDD12");
 			if (sampleSize < estimate+1) {
-				KDD12 classifier = new KDD12(datasetName);
+				Trillion classifier = new Trillion(datasetName);
 				classifier.setResDir(resDir);
-				classifier.setType(type);
+				classifier.setType(method);
 				start = System.nanoTime();
 				classifier.buildClassifier(newTrain);
 				stop = System.nanoTime();
 			} 
 			else {
-				KDD12 classifier = new KDD12(datasetName);
+				Trillion classifier = new Trillion(datasetName);
 				classifier.setResDir(resDir);
-				classifier.setType(type);
+				classifier.setType(method);
 				start = System.nanoTime();
 				classifier.buildClassifierEstimate(newTrain, estimate);
 				stop = System.nanoTime();
@@ -255,32 +255,32 @@ public class ScalabilityExperiment {
 	}
 
 	/**
-	 * Run SDM16 method
+	 * Run LBKeogh-PrunedDTW method
 	 * @param data
 	 */
-	public static void sdm16(Instances data) {
-			System.out.println("SDM16");
+	public static void keoghPrunedDTW(Instances data) {
+			System.out.println(method);
 
 			double[] timeTaken = new double[sampleTrains.length];
 			int i = 0;
 			for (int sampleSize : sampleTrains) {
-				double searchTime = sdm16(data, sampleSize);
+				double searchTime = keoghPrunedDTW(data, sampleSize);
 				timeTaken[i++] = searchTime;
 			}
 	}
 
 	/** 
-	 * Run SDM16 method for a given size
+	 * Run LBKeogh-PrunedDTW method for a given size
 	 * @param data
 	 * @param sampleSize
 	 * @return
 	 */
-	public static double sdm16(Instances data, int sampleSize) {
+	public static double keoghPrunedDTW(Instances data, int sampleSize) {
 		double share = 1, searchTime = 0;
 		long start, stop;
-		SDM16 classifier = new SDM16(datasetName);
+		LbKeoghPrunedDTW classifier = new LbKeoghPrunedDTW(datasetName);
 		classifier.setResDir(resDir);
-		classifier.setType(type);
+		classifier.setType(method);
 		try{
 			Instances newTrain = Sampling.sample(data, sampleSize);
 
@@ -313,7 +313,7 @@ public class ScalabilityExperiment {
 	 * @param error
 	 */
 	private static void saveSearchTime(int sampleSize, double searchTime) {
-		String fileName = resDir + "scaling_result_" + type + ".csv";
+		String fileName = resDir + "scaling_result_" + method + ".csv";
 		FileWriter out;
 		boolean append = false;
 		File file = new File(fileName);
