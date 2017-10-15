@@ -108,7 +108,7 @@ public class UCR_FastWWSPrunedDTW {
     }// End main
 	
 	private static void singleProblem (String datasetName) throws Exception {
-		resDir = projectPath + "outputs/Incorporate_SDM16/" + datasetName + "/";
+		resDir = projectPath + "outputs/Incorporate_PrunedDTW/" + datasetName + "/";
 		
 		File dir = new File(resDir);
         if (!dir.exists())
