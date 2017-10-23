@@ -81,7 +81,7 @@ public class ScalabilityExperiment {
 		case "UCRSuite":
 			ucrSuite(allData);
 			break;
-		case "LBKeogh-UCRSuite":
+		case "LBKeogh-PrunedDTW":
 			keoghPrunedDTW(allData);
 			break;
 		case "FastWWSearch":
