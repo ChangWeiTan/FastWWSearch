@@ -45,7 +45,7 @@ public class PercentageVsLength {
     public static void main(String[] args) throws Exception {
         // Initialise
         sampleType = "Single";
-        datasetName = "50Words";        // Name of dataset to be tested
+        datasetName = "ECG200";        // Name of dataset to be tested
 
         // Get project and dataset path
         osName = System.getProperty("os.name");
@@ -76,9 +76,9 @@ public class PercentageVsLength {
         }
 
         if (sampleType.equals("Single"))
-            System.out.println("Find best warping window with " + method + " on " + datasetName + " dataset -- " + nbRuns + " runs");
+            System.out.println("Find best warping window on " + datasetName + " dataset -- " + nbRuns + " runs");
         else
-            System.out.println("Find best warping window with " + method + " on " + sampleType + " dataset -- " + nbRuns + " runs");
+            System.out.println("Find best warping window on " + sampleType + " dataset -- " + nbRuns + " runs");
 
         // Run the comparison
         singleProblem(datasetName);
@@ -88,8 +88,8 @@ public class PercentageVsLength {
     /**
      * Running the experiment for a single dataset
      *
-     * @param datasetName
-     * @throws Exception
+     * @param datasetName dataset name
+     * @throws Exception e
      */
     private static void singleProblem(String datasetName) throws Exception {
         // Setting output directory

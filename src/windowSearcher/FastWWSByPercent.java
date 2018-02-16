@@ -253,6 +253,7 @@ public class FastWWSByPercent extends WindowSearcher {
         int currentWindowPercent = (forwardSearch) ? 0 : 100;
         double currentScore;
         bestScore = 1.0;
+        searchResults = new String[101];
 
         long startTime = System.currentTimeMillis();
 

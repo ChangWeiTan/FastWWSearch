@@ -116,7 +116,6 @@ public class WindowSearcher extends Classifier {
         L = new double[maxLength];
 
         maxWindow = Math.round(1 * maxLength);
-        searchResults = new String[maxWindow + 1];
         nns = new int[maxWindow + 1][train.length];
         dist = new double[maxWindow + 1][train.length];
 
@@ -238,6 +237,7 @@ public class WindowSearcher extends Classifier {
         int currentWindow = (forwardSearch) ? 0 : maxWindow;
         double currentScore;
         bestScore = 1.0;
+        searchResults = new String[maxWindow + 1];
 
         long startTime = System.currentTimeMillis();
 
