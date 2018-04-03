@@ -1,0 +1,29 @@
+function dist = lbKeogh(q, c, w, varargin)
+for i = 1:length(varargin)
+    field = lower(varargin{i});
+    value = varargin{i+1};
+    switch field
+        case {'w', 'window', 'warpingwindow'}
+            W = value;
+        case 'costmatrix'
+            costM = value;
+        case 'pathmatrix'
+            pathM = value;
+        case 'windowmatrix'
+            windowM = value;
+        case 'square'
+            squareRoot = value;
+    end
+end
+
+U = zeros(size(q));
+L = zeros(size(c));
+for i = 1:length(c)
+    jstart = max(1, i-w);
+    jend = min(length(c), i+w);
+    tmp = c(jstart:jend);
+    U(i) = max(tmp);
+    L(i) = min(tmp);
+end
+score = sum(sum([[q > U].* [q-U]; [q < L].* [L-q]].^2));
+end
