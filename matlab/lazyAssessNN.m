@@ -1,13 +1,24 @@
-function [rrt, dtwRes, minValidWindow] = lazyAssessNN(q, indexQ, c, indexC, scoreToBeat, w, cache, costM, pathM, windowM)
-dtwRes = -1;
-minValidWindow = -1;
+function [rrt, dtwRes, minValidWindow, cache] = lazyAssessNN(q, indexQ, c, indexC, scoreToBeat, w, cache, costM, pathM, windowM, dtwRes, minValidWindow)
+if strcmp(cache.stoppedAt(indexQ), 'DTW')
+    if w >= minValidWindow
+        cache.setStatus(indexQ, 'DTW');
+    else
+        cache.setStatus(indexQ, 'PreviousWindowDTW');
+    end
+elseif ~strcmp(cache.stoppedAt(indexQ), 'None')
+    cache.setStatus(indexQ, 'PreviousWindowLB');
+end
+
+
 if strcmp(cache.stoppedAt(indexQ), 'None')
     minDist = lbKim(q, c);
     cache = cache.setMinDist(indexQ, minDist);
     cache = cache.setBestMinDist(indexQ, minDist);
     cache = cache.setStatus(indexQ, 'Kim');
 end
-if strcmp(cache.stoppedAt(indexQ), 'Kim')
+if strcmp(cache.stoppedAt(indexQ), 'Kim') || ... 
+        strcmp(cache.stoppedAt(indexQ), 'PreviousWindowDTW') || ...
+        strcmp(cache.stoppedAt(indexQ), 'PreviousWindowLB')
     if cache.minDists(indexQ) >= scoreToBeat
         rrt = 'PrunedWithLB';
         return
@@ -69,12 +80,12 @@ if strcmp(cache.stoppedAt(indexQ), 'FullKeoghCQ')
         return
     end
     [dtwRes, minValidWindow] = dtw(q, c, 'w', w, ...
-        'costmatrix', costM, 'pathmatrix', pathM, 'windowmatrix', windowM);
-    cache = cache.setMinDist(indexQ, dtwRes^2);
+        'costmatrix', costM, 'pathmatrix', pathM, ...
+        'windowmatrix', windowM, 'square', true);
+    dtwRes = dtwRes^2;
+    cache = cache.setMinDist(indexQ, dtwRes);
     cache = cache.setBestMinDist(indexQ, max(cache.minDists(indexQ), cache.bestMinDists(indexQ)));
     cache = cache.setStatus(indexQ, 'DTW');
-    cache.dtwDist(indexQ, w+1) = dtwRes^2;
-    cache.minValidWindow(indexQ, w+1) = minValidWindow;
 end
 
 if strcmp(cache.stoppedAt(indexQ), 'DTW')

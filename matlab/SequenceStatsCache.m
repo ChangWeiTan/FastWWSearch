@@ -34,7 +34,7 @@ classdef SequenceStatsCache
             obj.isMaximumFirst = false(nSeq, 1);
             obj.isMaximumLast = false(nSeq, 1);
             obj.indicesSortedByAbsoluteValue = zeros(nSeq, len);
-            obj.status = cell(nSeq, 1);
+            obj.status = cell(nSeq, len);
             obj.minDists = zeros(nSeq, 1);
             obj.bestMinDists = zeros(nSeq, 1);
             obj.dtwDist = zeros(nSeq, 1);
@@ -50,7 +50,7 @@ classdef SequenceStatsCache
                 obj.isMaximumFirst(i) = indexMax == 1;
                 obj.isMaximumLast(i) = indexMin == len;
                 obj.indicesSortedByAbsoluteValue(i, :) = sortedIndices;
-                obj.status{i} = 'None';
+                obj.status(i, :) = {'None'};
             end
         end
         
@@ -62,12 +62,12 @@ classdef SequenceStatsCache
             obj.bestMinDists(i) = bestMinDist;
         end
         
-        function obj = setStatus(obj, i, status)
-            obj.status{i} = status;
+        function obj = setStatus(obj, i, w, status)
+            obj.status{i, w} = status;
         end
         
-        function status = stoppedAt(obj, i)
-            status = obj.status{i};
+        function status = stoppedAt(obj, i, w)
+            status = obj.status{i, w};
         end
         
         function [obj, LEs] = getLE(obj, i, w) 

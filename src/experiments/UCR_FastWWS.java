@@ -47,27 +47,25 @@ public class UCR_FastWWS {
 	public static void main(String[] args) throws Exception {
 		// Initialise
 		sampleType = "Single";				// Doing just 1 dataset, can be Sorted, Small, New or All
-		datasetName = "CBF";	// Name of dataset to be tested
+		datasetName = "ItalyPowerDemand";	// Name of dataset to be tested
 		method = "FastWWSearch";				// Method type in finding the best window
 		
 		// Get project and dataset path
-		osName = System.getProperty("os.name");		
-    	username = System.getProperty("user.name");
-		projectPath = "";
-		datasetPath = "data/";
-//    	if (osName.contains("Window")) {
-//    		projectPath = "C:/Users/" + username + "/workspace/SDM18/";
-//    		if (sampleType.equals("New"))
-//    			datasetPath = "C:/Users/" + username + "/workspace/Dataset/TSC_Problems/";
-//    		else
-//    			datasetPath = "C:/Users/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
-//    	} else {
-//    		projectPath = "/home/" + username + "/workspace/SDM18/";
-//    		if (sampleType.equals("New"))
-//    			datasetPath = "/home/" + username + "/workspace/Dataset/TSC_Problems/";
-//    		else
-//    			datasetPath = "/home/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
-//    	}
+		osName = System.getProperty("os.name");
+		username = System.getProperty("user.name");
+		if (osName.contains("Window")) {
+			projectPath = "C:/Users/" + username + "/workspace/SDM18/";
+			if (sampleType.equals("New"))
+				datasetPath = "C:/Users/" + username + "/workspace/Dataset/TSC_Problems/";
+			else
+				datasetPath = "C:/Users/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
+		} else {
+			projectPath = "/home/" + username + "/workspace/SDM18/";
+			if (sampleType.equals("New"))
+				datasetPath = "/home/" + username + "/workspace/Dataset/TSC_Problems/";
+			else
+				datasetPath = "/home/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
+		}
 		
 		// Get arguments 
 		if (args.length >= 1) projectPath = args[0];
@@ -150,7 +148,7 @@ public class UCR_FastWWS {
         // Go through different runs and randomize the dataset
         for (int i = 0; i < nbRuns; i++) {
         	// Sampling the dataset
-        	train = Sampling.random(train);        	
+//        	train = Sampling.random(train);
         	
         	// Initialising the classifier
         	System.out.println("Run " + i + ", Launching " + method);
