@@ -70,14 +70,14 @@ classdef SequenceStatsCache
             status = obj.status{i};
         end
         
-        function LEs = getLE(obj, i, w) 
+        function [obj, LEs] = getLE(obj, i, w) 
             if obj.lastWindowComputed(i) ~= w 
                 obj = computeLEandUE(obj, i, w);
             end
             LEs = obj.LEs(i,:);
         end
         
-        function UEs = getUE(obj, i, w) 
+        function [obj, UEs] = getUE(obj, i, w) 
             if obj.lastWindowComputed(i) ~= w 
                 obj = computeLEandUE(obj, i, w);
             end

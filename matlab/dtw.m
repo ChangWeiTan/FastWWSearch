@@ -65,7 +65,7 @@ for i=2:nq
                 windowM(i,j) = max(windowM(i-1,j), abs(i-j));
         end
     end
-    if jend < nc, costM(i, jend) = inf; end
+    if (j+1) < nc, costM(i, j+1) = inf; end
 end
 dist = costM(nq,nc);
 if squareRoot, dist = sqrt(dist); end

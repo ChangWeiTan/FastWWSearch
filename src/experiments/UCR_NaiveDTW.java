@@ -47,25 +47,27 @@ public class UCR_NaiveDTW {
 	public static void main(String[] args) throws Exception {
 		// Initialise
 		sampleType = "Single";			// Doing just 1 dataset, can be Sorted, Small, New or All
-		datasetName = "ArrowHead";		// Name of dataset to be tested
-		method = "NaiveDTW";				// Method type in finding the best window
+		datasetName = "CBF";		// Name of dataset to be tested
+		method = "NaiveDTW";			// Method type in finding the best window
 		
 		// Get project and dataset path
 		osName = System.getProperty("os.name");		
     	username = System.getProperty("user.name");
-    	if (osName.contains("Window")) {
-    		projectPath = "C:/Users/" + username + "/workspace/SDM18/";
-    		if (sampleType.equals("New")) 
-    			datasetPath = "C:/Users/" + username + "/workspace/Dataset/TSC_Problems/";
-    		else
-    			datasetPath = "C:/Users/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
-    	} else {
-    		projectPath = "/home/" + username + "/workspace/SDM18/";
-    		if (sampleType.equals("New")) 
-    			datasetPath = "/home/" + username + "/workspace/Dataset/TSC_Problems/";
-    		else
-    			datasetPath = "/home/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
-    	}
+    	projectPath = "";
+    	datasetPath = "data/";
+//    	if (osName.contains("Window")) {
+//    		projectPath = "C:/Users/" + username + "/workspace/SDM18/";
+//    		if (sampleType.equals("New"))
+//    			datasetPath = "C:/Users/" + username + "/workspace/Dataset/TSC_Problems/";
+//    		else
+//    			datasetPath = "C:/Users/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
+//    	} else {
+//    		projectPath = "/home/" + username + "/workspace/SDM18/";
+//    		if (sampleType.equals("New"))
+//    			datasetPath = "/home/" + username + "/workspace/Dataset/TSC_Problems/";
+//    		else
+//    			datasetPath = "/home/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
+//    	}
 		   
     	// Get arguments 
 		if (args.length >= 1) projectPath = args[0];
