@@ -1,25 +1,20 @@
 % Class for nearest neighbour
 classdef NearestNeighbour
     properties
-        status      % status: partial or full NN
         index
         distance
         validWin
     end
     methods
         function obj = NearestNeighbour(nSeq, maxWindow)
-            obj.index = zeros(nSeq, maxWindow);
+            obj.index = -1 * ones(nSeq, maxWindow);
             obj.distance = inf * ones(nSeq, maxWindow);
-            obj.status = cell(nSeq, maxWindow);
-            obj.validWin = zeros(nSeq, maxWindow);
+            obj.validWin = -1 * ones(nSeq, maxWindow);
         end
         
         function flag = isNN(obj, i, w)
-            flag = strcmp(obj.status{i, w}, 'FullNN');
-        end
-        
-        function obj = setNN(obj, i, w, val)
-            obj.status{i, w} = val;
+            flag = (obj.index(i, w) >= 0) && ...
+                (obj.distance(i, w) < inf) && (obj.validWin(i, w) >= 0);
         end
         
         function idx = getIndex(obj, i, w)

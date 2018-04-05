@@ -1,18 +1,20 @@
-function [bestWin, nns, errors] = fastWWSearch(train, trainClass)
-fprintf('Fast Warping Window Search of the best warping window\n');
+function [bestWin, nns, errors] = naiveWWSearch(train, trainClass)
+fprintf('Naive Search of the best warping window\n');
+
 [nSeq, len] = size(train);
 maxWindow = len + 1;
-
-nns = fastFillNNTable(train);
+nns = NearestNeighbour(nSeq, maxWindow);
 errors = zeros(maxWindow, 1);
-bestErr = len;
+bestErr = nSeq;
 bestWin = -1;
 
 for w = 0:maxWindow-1
     W = w+1;
+    nns = loocv(train, w, nns);
+    
     errCount = 0;
     for i = 1:nSeq
-        nnIndex = nns.getIndex(i, w+1);
+        nnIndex = nns.getIndex(i, W);
         if trainClass(i) ~= trainClass(nnIndex)
             errCount = errCount + 1;
         end

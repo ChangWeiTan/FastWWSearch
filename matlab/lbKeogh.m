@@ -1,5 +1,5 @@
 function dist = lbKeogh(q, c, w, varargin)
-for i = 1:length(varargin)
+for i = 1:2:length(varargin)
     field = lower(varargin{i});
     value = varargin{i+1};
     switch field
@@ -13,6 +13,7 @@ for i = 1:length(varargin)
 end
 if ~exist('U', 'var'), U = zeros(size(q)); end
 if ~exist('L', 'var'), L = zeros(size(c)); end
+if ~exist('squareRoot', 'var'), squareRoot = false; end
 
 [U, L] = lbKeoghFillUL(q, w, U, L);
 

@@ -12,3 +12,4 @@ data/Beef/Beef_TEST
 data/Beef/Beef_TRAIN
 data/CBF/CBF_TEST
 data/CBF/CBF_TRAIN
+*.m~

@@ -15,13 +15,12 @@ classdef SequenceStatsCache
         status
         minDists
         bestMinDists
-        dtwDist
-        minValidWindow
+        validWin
     end
     methods
         function obj = SequenceStatsCache(train, startingWindow)
             [nSeq, len] = size(train);
-           
+            
             obj.train = train;
             obj.LEs = zeros(nSeq, len);
             obj.UEs = zeros(nSeq, len);
@@ -34,11 +33,10 @@ classdef SequenceStatsCache
             obj.isMaximumFirst = false(nSeq, 1);
             obj.isMaximumLast = false(nSeq, 1);
             obj.indicesSortedByAbsoluteValue = zeros(nSeq, len);
-            obj.status = cell(nSeq, len);
-            obj.minDists = zeros(nSeq, 1);
-            obj.bestMinDists = zeros(nSeq, 1);
-            obj.dtwDist = zeros(nSeq, 1);
-            obj.minValidWindow = zeros(nSeq, 1);
+            obj.status = cell(nSeq);
+            obj.minDists = inf*ones(nSeq);
+            obj.bestMinDists = inf*ones(nSeq);
+            obj.validWin = -1*ones(nSeq);
             for i = 1:nSeq
                 [minimum, indexMin] = min(train(i, :));
                 [maximum, indexMax] = max(train(i, :));
@@ -54,20 +52,24 @@ classdef SequenceStatsCache
             end
         end
         
-        function obj = setMinDist(obj, i, minDist)
-            obj.minDists(i) = minDist;
+        function obj = setValidWin(obj, i, j, val)
+            obj.validWin(i, j) = val;
         end
         
-        function obj = setBestMinDist(obj, i, bestMinDist)
-            obj.bestMinDists(i) = bestMinDist;
+        function obj = setMinDist(obj, i, j, minDist)
+            obj.minDists(i, j) = minDist;
         end
         
-        function obj = setStatus(obj, i, w, status)
-            obj.status{i, w} = status;
+        function obj = setBestMinDist(obj, i, j, bestMinDist)
+            obj.bestMinDists(i, j) = bestMinDist;
         end
         
-        function status = stoppedAt(obj, i, w)
-            status = obj.status{i, w};
+        function obj = setStatus(obj, i, j, status)
+            obj.status{i, j} = status;
+        end
+        
+        function status = stoppedAt(obj, i, j)
+            status = obj.status{i, j};
         end
         
         function [obj, LEs] = getLE(obj, i, w) 
