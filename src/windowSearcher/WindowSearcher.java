@@ -360,6 +360,10 @@ public class WindowSearcher extends Classifier {
         return bestWarpingWindow;
     }
 
+    public void setBestWin(int w) {
+        bestWarpingWindow = w;
+    }
+
     /**
      * Get the best warping window in percentage
      */
