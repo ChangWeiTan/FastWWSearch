@@ -1,4 +1,4 @@
-function [dist, minValidWindow, costM, pathM, windowM] = dtw(q, c, varargin)
+function [dist, minValidWindow, costM, pathM, windowM] = dtw2(q, c, varargin)
 diag = 0;
 left = 1;
 up = 2;

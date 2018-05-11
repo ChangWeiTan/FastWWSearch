@@ -35,13 +35,16 @@ import windowSearcher.*;
  * @author Chang Wei Tan
  */
 public class ScalabilityExperiment {
-    private static int estimate = 10000;
+    private static int estimate = 500;
+    private static double timeLimit = 3.6e12;
     private static String osName, datasetName, username, projectPath, datasetPath, resDir, method;
-    private static int[] sampleTrains = new int[]{100, 100, 250, 500, 1000, 2000, 5000, 10000, 20000, 50000, 100000, 500000, 1000000};
-
+//    private static int[] sampleTrains = new int[]{100, 100, 250, 500, 1000, 50000, 100000, 500000, 1000000};
+    private static int[] sampleTrains = new int[]{100, 100, 250, 500, 1000, 2000, 1000000};
     public static void main(String[] args) throws Exception {
         datasetName = "SITS1M_fold1";        // Name of dataset to be tested
-        method = "NaiveDTW";                // Method type in finding the best window "naive, kdd12, sdm16, fastwws"
+        method = "FastWWSearch";                // Method type in finding the best window "naive, kdd12, sdm16, fastwws"
+
+        if (args.length > 1) method = args[0];
 
         // Get project and dataset path
         osName = System.getProperty("os.name");
@@ -175,10 +178,15 @@ public class ScalabilityExperiment {
                 classifier.buildClassifier(newTrain);
                 stop = System.nanoTime();
             } else {
+//                start = System.nanoTime();
+//                classifier.buildClassifierEstimate(newTrain, estimate);
+//                stop = System.nanoTime();
+//                share = 1.0 * (estimate + 1) / newTrain.numInstances();
+
                 start = System.nanoTime();
-                classifier.buildClassifierEstimate(newTrain, estimate);
+                int completed = classifier.buildClassifierEstimate2(newTrain, estimate, timeLimit);
                 stop = System.nanoTime();
-                share = 1.0 * (estimate + 1) / newTrain.numInstances();
+                share = 1.0 * (completed + 1) / newTrain.numInstances();
             }
             searchTime = 1.0 * ((stop - start) / 1e9);
             searchTime = searchTime / share;
@@ -225,10 +233,15 @@ public class ScalabilityExperiment {
                 classifier.buildClassifier(newTrain);
                 stop = System.nanoTime();
             } else {
+//                start = System.nanoTime();
+//                classifier.buildClassifierEstimate(newTrain, estimate);
+//                stop = System.nanoTime();
+//                share = 1.0 * (estimate + 1) / newTrain.numInstances();
+
                 start = System.nanoTime();
-                classifier.buildClassifierEstimate(newTrain, estimate);
+                int completed = classifier.buildClassifierEstimate2(newTrain, estimate, timeLimit);
                 stop = System.nanoTime();
-                share = 1.0 * (estimate + 1) / newTrain.numInstances();
+                share = 1.0 * (completed + 1) / newTrain.numInstances();
             }
             searchTime = 1.0 * ((stop - start) / 1e9);
             searchTime = searchTime / share;

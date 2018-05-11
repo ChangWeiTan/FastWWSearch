@@ -54,7 +54,10 @@ if strcmp(status, 'PartialKeoghQC')
         cache = cache.setStatus(indexQ, indexC, status);
         return
     end
-    [cache, minDist, indexStoppedLB] = tryLbKeogh(cache, query, indexQ, candidate, indexC, w);
+    [cache, minDist, indexStoppedLB] = tryLbKeogh2(cache, query, indexQ, candidate, indexC, w);
+%     [cache,LEQ] = cache.getLE(indexQ, w+1);
+%     [cache,UEQ] = cache.getUE(indexQ, w+1);
+%     [minDist, indexStoppedLB] = tryLbKeogh(query, candidate, indexQ, indexC, w, UEQ, LEQ, cache.getIndicesSortedByAbsoluteValue(indexC));
     if minDist > bestMinDist
         bestMinDist = minDist;
     end
@@ -84,7 +87,10 @@ if strcmp(status, 'PartialKeoghCQ')
         cache = cache.setStatus(indexQ, indexC, status);
         return
     end
-    [cache, minDist, indexStoppedLB] = tryLbKeogh(cache, candidate, indexC, query, indexQ, w);
+    [cache, minDist, indexStoppedLB] = tryLbKeogh2(cache, candidate, indexC, query, indexQ, w);
+%     [cache,LEC] = cache.getLE(indexC, w+1);
+%     [cache,UEC] = cache.getUE(indexC, w+1);
+%     [minDist, indexStoppedLB] = tryLbKeogh(candidate, query, indexC, indexQ, w, UEC, LEC, cache.getIndicesSortedByAbsoluteValue(indexQ));
     if minDist > bestMinDist
         bestMinDist = minDist;
     end
@@ -110,9 +116,10 @@ if strcmp(status, 'FullKeoghCQ')
         cache = cache.setStatus(indexQ, indexC, status);
         return
     end
-    [dtwRes, minValidWindow] = dtw(query, candidate, 'w', w, ...
-        'costmatrix', costM, 'pathmatrix', pathM, ...
-        'windowmatrix', windowM, 'square', true);
+    [dtwRes, minValidWindow] = dtw(query, candidate, w);
+%     [dtwRes, minValidWindow] = dtw2(query, candidate, 'w', w, ...
+%         'costmatrix', costM, 'pathmatrix', pathM, ...
+%         'windowmatrix', windowM, 'square', true);
     dtwRes = dtwRes^2;
     minDist = dtwRes;
     if minDist > bestMinDist
@@ -135,7 +142,7 @@ if strcmp(status, 'DTW')
 end
 end
 
-function [cache, minDist, indexStoppedLB] = tryLbKeogh(cache, q, indexQ, c, indexC, w)
+function [cache, minDist, indexStoppedLB] = tryLbKeogh2(cache, q, indexQ, c, indexC, w)
 len = length(q);
 W = w+1;
 [cache,LEQ] = cache.getLE(indexQ, W);

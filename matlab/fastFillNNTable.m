@@ -1,11 +1,13 @@
 function nns = fastFillNNTable(train)
-[nSeq, len] = size(train);
-maxWindow = len + 1;
-costM = inf * ones(len, len);
-pathM = -1 * ones(len, len);
-windowM = zeros(len, len);
+[nSeq, len] = size(train);      % get the size of the training set
+maxWindow = len + 1;            % window from 0 to L, therefore L+1 windows
 
-% initialise nearest neighbour
+% initialise the matrices for DTW computations 
+costM = inf * ones(len, len);   % cost matrix
+pathM = -1 * ones(len, len);    % matrix for the warping path 
+windowM = zeros(len, len);      % window validity matrix
+
+% initialise nearest neighbour class
 nns = NearestNeighbour(nSeq, maxWindow);
 % initialise cache
 cache = SequenceStatsCache(train, maxWindow);
@@ -15,7 +17,7 @@ for indexQ = 2:nSeq
     query = train(indexQ, :);
     
     for w = maxWindow-1:-1:0
-        W = w+1;
+        W = w+1; 
         if nns.isNN(indexQ, W)
             % if we already have NN of query for w
             % update the table for NNs[candidates][w]

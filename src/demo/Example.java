@@ -27,19 +27,7 @@ public class Example {
         // Get project and dataset path
         osName = System.getProperty("os.name");
         username = System.getProperty("user.name");
-        if (osName.contains("Window")) {
-            projectPath = "C:/Users/" + username + "/workspace/SDM18/";
-            if (sampleType.equals("New"))
-                datasetPath = "C:/Users/" + username + "/workspace/Dataset/TSC_Problems/";
-            else
-                datasetPath = "C:/Users/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
-        } else {
-            projectPath = "/home/" + username + "/workspace/SDM18/";
-            if (sampleType.equals("New"))
-                datasetPath = "/home/" + username + "/workspace/Dataset/TSC_Problems/";
-            else
-                datasetPath = "/home/" + username + "/workspace/Dataset/UCR_Time_Series_Archive/";
-        }
+        datasetPath = "C:\\Users\\cwtan\\workspace\\Dataset\\TSC_Problems\\";
 
         // Get arguments
         if (args.length >= 1) projectPath = args[0];
@@ -114,7 +102,8 @@ public class Example {
         Instances train1 = data[0];
         Instances train = new Instances(train1, 0);
         Instances test = data[1];
-        ArrayList<Integer> sampleIndex = new ArrayList<>(Arrays.asList(27,47,0,19,9));
+//        ArrayList<Integer> sampleIndex = new ArrayList<>(Arrays.asList(27,47,0,19,9));
+        ArrayList<Integer> sampleIndex = new ArrayList<>(Arrays.asList(27,0,19,9));
         int nTrain = train1.numInstances();
         for (int i = 0; i < nTrain; i++) {
             if (sampleIndex.contains(i)){

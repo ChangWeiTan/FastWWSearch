@@ -172,7 +172,7 @@ public class UCR_FastWWS {
         	System.out.println(eval.errorRate());
 
         	// Save result
-        	saveSearchTime(searchTime, eval.errorRate());
+//        	saveSearchTime(searchTime, eval.errorRate());
         }
 	}
 	

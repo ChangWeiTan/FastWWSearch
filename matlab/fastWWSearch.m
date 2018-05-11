@@ -1,5 +1,4 @@
 function [bestWin, nns, errors] = fastWWSearch(train, trainClass)
-fprintf('Fast Warping Window Search of the best warping window\n');
 [nSeq, len] = size(train);
 maxWindow = len + 1;
 

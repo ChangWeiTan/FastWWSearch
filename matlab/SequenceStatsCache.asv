@@ -111,8 +111,6 @@ classdef SequenceStatsCache
             val = obj.indicesSortedByAbsoluteValue(i, n);
         end
         
-        function val = getIndicesSortedByAbsoluteValue(obj, i)
-            val = obj.indicesSortedByAbsoluteValue(i,:);
-        end
+        function val = getIndicesSortedByAbsoluteValue(ob
     end
 end

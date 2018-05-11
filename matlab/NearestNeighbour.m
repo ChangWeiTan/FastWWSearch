@@ -1,9 +1,9 @@
 % Class for nearest neighbour
 classdef NearestNeighbour
     properties
-        index
-        distance
-        validWin
+        index       % index of the series in training dataset
+        distance    % distance to the query
+        validWin    % window validity 
     end
     methods
         function obj = NearestNeighbour(nSeq, maxWindow)
