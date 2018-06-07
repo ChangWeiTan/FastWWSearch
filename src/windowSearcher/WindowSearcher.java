@@ -229,6 +229,68 @@ public class WindowSearcher extends Classifier {
         System.out.println("Windows found=" + bestWarpingWindow + " Best Acc=" + (1 - bestScore));
     }
 
+    public int buildClassifierEstimate2(Instances data, int estimate, double timeLimit) {
+        long start = System.nanoTime();
+        initialise(data);
+
+        int[] nErrors = new int[maxWindow + 1];
+        double[] score = new double[maxWindow + 1];
+        double bestScore = Double.MAX_VALUE;
+        double minD;
+        int i;
+
+        // Start searching for the best window.
+        // Only loop through a given size of the dataset, but still search for NN from the whole train
+        // for every sequence in train, we find NN for all window
+        // then in the end, update the best score
+        for (i = 0; i < train.length; i++) {
+            SymbolicSequence testSeq = train[i];
+
+            for (int w = 0; w <= maxWindow; w++) {
+                testSeq.LB_KeoghFillUL(w, U, L);
+
+                minD = Double.MAX_VALUE;
+                String classValue = null;
+                for (int j = 0; j < train.length; j++) {
+                    if (i == j)
+                        continue;
+                    SymbolicSequence trainSeq = train[j];
+                    if (SymbolicSequence.LB_KeoghPreFilled(trainSeq, U, L) < minD) {
+                        double tmpD = testSeq.DTW(trainSeq, w, warpingMatrix);
+                        if (tmpD < minD) {
+                            minD = tmpD;
+                            classValue = classMap[j];
+                            nns[w][i] = j;
+                        }
+                        dist[w][j] = tmpD * tmpD;
+                    }
+                }
+
+                if (classValue == null || !classValue.equals(classMap[i])) {
+                    nErrors[w]++;
+                }
+                score[w] = 1.0 * nErrors[w] / train.length;
+            }
+
+            if ((System.nanoTime() - start) >= timeLimit || i > estimate) {
+                System.out.println("Overtime, completed " + i);
+                break;
+            }
+        }
+
+        for (int w = 0; w < maxWindow; w++) {
+            if (score[w] < bestScore) {
+                bestScore = score[w];
+                bestWarpingWindow = w;
+            }
+        }
+
+        // Saving best windows found
+        System.out.println("Windows found=" + bestWarpingWindow + " Best Acc=" + (1 - bestScore));
+
+        return i;
+    }
+
     /**
      * Search for the best warping window
      * for every window, we evaluate the performance of the classifier
@@ -353,11 +415,55 @@ public class WindowSearcher extends Classifier {
         return searchResults;
     }
 
+    public void initialise(Instances data) {
+        Attribute classAttribute = data.classAttribute();
+
+        classedData = new HashMap <>();
+        classedDataIndices = new HashMap <>();
+        for (int c = 0; c < data.numClasses(); c++) {
+            classedData.put(data.classAttribute().value(c), new ArrayList<>());
+            classedDataIndices.put(data.classAttribute().value(c), new ArrayList<>());
+        }
+
+        train = new SymbolicSequence[data.numInstances()];
+        classMap = new String[train.length];
+        maxLength = 0;
+        for (int i = 0; i < train.length; i++) {
+            Instance sample = data.instance(i);
+            MonoDoubleItemSet[] sequence = new MonoDoubleItemSet[sample.numAttributes() - 1];
+            maxLength = Math.max(maxLength, sequence.length);
+            int shift = (sample.classIndex() == 0) ? 1 : 0;
+            for (int t = 0; t < sequence.length; t++) {
+                sequence[t] = new MonoDoubleItemSet(sample.value(t + shift));
+            }
+            train[i] = new SymbolicSequence(sequence);
+            String clas = sample.stringValue(classAttribute);
+            classMap[i] = clas;
+            classedData.get(clas).add(train[i]);
+            classedDataIndices.get(clas).add(i);
+        }
+
+        warpingMatrix = new double[maxLength][maxLength];
+        U = new double[maxLength];
+        L = new double[maxLength];
+
+        maxWindow = Math.round(maxLength);
+        nns = new int[maxWindow + 1][train.length];
+        dist = new double[maxWindow + 1][train.length];
+        searchResults = new String[maxWindow + 1];
+
+        bestWarpingWindow = -1;
+    }
+
     /**
      * Get the best warping window found
      */
     public int getBestWin() {
         return bestWarpingWindow;
+    }
+
+    public void setBestWin(int w) {
+        bestWarpingWindow = w;
     }
 
     /**

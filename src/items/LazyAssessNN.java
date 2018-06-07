@@ -272,7 +272,7 @@ public class LazyAssessNN implements Comparable<LazyAssessNN> {
 				return RefineReturnType.Pruned_with_LB;
 			}
 			// if LB_Kim_FL done, then start LB_Keogh(Q,R)
-			indexStoppedLB = 0;
+				indexStoppedLB = 0;
 			minDist = 0;
 		case Partial_LB_KeoghQR:
 			// if had started LB_Keogh, then just starting from

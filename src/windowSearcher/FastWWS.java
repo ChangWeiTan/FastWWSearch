@@ -41,7 +41,7 @@ public class FastWWS extends WindowSearcher {
     // Fields
     // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     private static final long serialVersionUID = 1536192551485201554L;
-    private PotentialNN[][] nns;                                        // Our main structure
+    public PotentialNN[][] nns;                                        // Our main structure
     private boolean init;                                               // Have we initialize our structure?
     // --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
     // Constructor
@@ -287,7 +287,7 @@ public class FastWWS extends WindowSearcher {
     /**
      * Potential nearest neighbour
      */
-    private static class PotentialNN {
+    public static class PotentialNN {
         public int index;               // Index of the sequence in train[]
         public int r;                   // Window validity
         public double distance;         // Computed distance
